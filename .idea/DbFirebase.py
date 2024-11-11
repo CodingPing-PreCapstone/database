@@ -1,7 +1,16 @@
-from firebase_admin import firestore
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 class DbFirebase:
     def __init__(self):
+
+
+
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("path/to/your/serviceAccountKey.json")  # 경로를 올바르게 설정하세요.
+            # firebase_admin.initialize_app(cred)
+
+
         self.db = firestore.client()
         self.doc_ref_user = None
         self.doc_ref_message = None
@@ -115,6 +124,99 @@ class DbFirebase:
         results = [doc.to_dict() for doc in docs]
         print(f"AI Images with {field} == {value}: {results}")
         return results
+
+
+    # Message CRUD Functions
+
+    def set_message_ref(self, message_id):
+        self.doc_ref_message = self.doc_ref_user.collection("message").document(message_id)
+
+    def create_message_document(self, data):
+        if self.doc_ref_message:
+            self.doc_ref_message.set(data)
+            print(f"Message document created: {self.doc_ref_message.id}")
+
+    def read_message_document(self):
+        if self.doc_ref_message:
+            doc = self.doc_ref_message.get()
+            if doc.exists:
+                print(f"Message document read: {self.doc_ref_message.id}")
+                return doc.to_dict()
+            else:
+                print("Message document does not exist.")
+                return None
+
+    def update_message_document(self, data):
+        if self.doc_ref_message:
+            self.doc_ref_message.update(data)
+            print(f"Message document updated: {self.doc_ref_message.id}")
+
+    def delete_message_document(self):
+        if self.doc_ref_message:
+            self.doc_ref_message.delete()
+            print(f"Message document deleted: {self.doc_ref_message.id}")
+
+    # Image CRUD Functions
+
+    def set_image_ref(self, image_id):
+        self.doc_ref_image = self.doc_ref_user.collection("image").document(image_id)
+
+    def create_image_document(self, data):
+        if self.doc_ref_image:
+            self.doc_ref_image.set(data)
+            print(f"Image document created: {self.doc_ref_image.id}")
+
+    def read_image_document(self):
+        if self.doc_ref_image:
+            doc = self.doc_ref_image.get()
+            if doc.exists:
+                print(f"Image document read: {self.doc_ref_image.id}")
+                return doc.to_dict()
+            else:
+                print("Image document does not exist.")
+                return None
+
+    def update_image_document(self, data):
+        if self.doc_ref_image:
+            self.doc_ref_image.update(data)
+            print(f"Image document updated: {self.doc_ref_image.id}")
+
+    def delete_image_document(self):
+        if self.doc_ref_image:
+            self.doc_ref_image.delete()
+            print(f"Image document deleted: {self.doc_ref_image.id}")
+
+    # AI Image CRUD Functions
+
+    def set_AIimage_ref(self, AIimage_id):
+        self.doc_ref_AIimage = self.doc_ref_user.collection("AI_image").document(AIimage_id)
+
+    def create_AIimage_document(self, data):
+        if self.doc_ref_AIimage:
+            self.doc_ref_AIimage.set(data)
+            print(f"AI Image document created: {self.doc_ref_AIimage.id}")
+
+    def read_AIimage_document(self):
+        if self.doc_ref_AIimage:
+            doc = self.doc_ref_AIimage.get()
+            if doc.exists:
+                print(f"AI Image document read: {self.doc_ref_AIimage.id}")
+                return doc.to_dict()
+            else:
+                print("AI Image document does not exist.")
+                return None
+
+    def update_AIimage_document(self, data):
+        if self.doc_ref_AIimage:
+            self.doc_ref_AIimage.update(data)
+            print(f"AI Image document updated: {self.doc_ref_AIimage.id}")
+
+    def delete_AIimage_document(self):
+        if self.doc_ref_AIimage:
+            self.doc_ref_AIimage.delete()
+            print(f"AI Image document deleted: {self.doc_ref_AIimage.id}")
+
+
 
     # Logging function
     def show_log(self, method, user_id, message):
