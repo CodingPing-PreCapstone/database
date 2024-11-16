@@ -128,6 +128,7 @@ def create_message():
     message_collection.create(data)
     return jsonify({"message": "Message created successfully"}), 201
 
+
 @app.route('/get_message/<user>', methods=['GET'])
 def get_message(user):
     message_collection = MessageCollection()
@@ -193,6 +194,47 @@ def trim_lastest_ai_image(user):
     lastest_ai_image_collection = LastestAIImageCollection()
     lastest_ai_image_collection.trim_lastest_AI_image_array(user)
     return jsonify({"message": f"Trimmed AI_image_array for user {user}"}), 200
+
+
+
+# lastestMessage 컬렉션 API
+@app.route('/create_lastest_message', methods=['POST'])
+def create_lastest_message():
+    data = request.json
+    lastest_message_collection = LastestMessageCollection()
+    if lastest_message_collection.user_exists(data['user']):
+        return jsonify({"message": "lastestMessage entry for this user already exists!"}), 400
+    lastest_message_collection.create(data)
+    return jsonify({"message": "lastestMessage created successfully"}), 201
+
+@app.route('/get_lastest_message/<user>', methods=['GET'])
+def get_lastest_message(user):
+    lastest_message_collection = LastestMessageCollection()
+    result = lastest_message_collection.read(user)
+    return jsonify([obj.__dict__ for obj in result]), 200
+
+@app.route('/trim_lastest_message/<user>', methods=['POST'])
+def trim_lastest_message(user):
+    lastest_message_collection = LastestMessageCollection()
+    lastest_message_collection.trim_lastest_message_array(user)
+    return jsonify({"message": f"Trimmed lastestMessageArray for user {user}"}), 200
+
+# @app.route('/update_lastest_message/<user>', methods=['PUT'])
+# def update_lastest_message(user):
+#     data = request.json
+#     lastest_message_collection = LastestMessageCollection()
+#     if not lastest_message_collection.user_exists(user):
+#         return jsonify({"message": "lastestMessage entry for this user does not exist!"}), 404
+#     lastest_message_collection.update(user, data)
+#     return jsonify({"message": "lastestMessage updated successfully"}), 200
+#
+# @app.route('/delete_lastest_message/<user>', methods=['DELETE'])
+# def delete_lastest_message(user):
+#     lastest_message_collection = LastestMessageCollection()
+#     if not lastest_message_collection.user_exists(user):
+#         return jsonify({"message": "lastestMessage entry for this user does not exist!"}), 404
+#     lastest_message_collection.delete(user)
+#     return jsonify({"message": "lastestMessage deleted successfully"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

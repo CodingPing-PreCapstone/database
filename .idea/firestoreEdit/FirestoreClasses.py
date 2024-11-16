@@ -87,7 +87,7 @@ class LastestImageCollection(FirestoreCollection):
         docs = self.collection.where('user', '==', user).stream()
         for doc in docs:
             data = self.to_dict(doc)
-            if len(data['imagePathArray']) > 20:
+            if len(data['imagePathArray']) > 10:
                 trimmed_array = data['imagePathArray'][1:]  # Remove the oldest element
                 self.collection.document(doc.id).update({'imagePathArray': trimmed_array})
                 print("Trimmed imagePathArray for user", user)
@@ -103,7 +103,7 @@ class LastestContactCollection(FirestoreCollection):
         docs = self.collection.where('user', '==', user).stream()
         for doc in docs:
             data = self.to_dict(doc)
-            if len(data['contactArray']) > 20:
+            if len(data['contactArray']) > 10:
                 trimmed_array = data['contactArray'][1:]  # Remove the oldest element
                 self.collection.document(doc.id).update({'contactArray': trimmed_array})
                 print("Trimmed contactArray for user", user)
@@ -120,11 +120,26 @@ class LastestAIImageCollection(FirestoreCollection):
         docs = self.collection.where('user', '==', user).stream()
         for doc in docs:
             data = self.to_dict(doc)
-            if len(data['AI_image_array']) > 20:
+            if len(data['AI_image_array']) > 10:
                 trimmed_array = data['AI_image_array'][1:]  # Remove the oldest element
                 self.collection.document(doc.id).update({'AI_image_array': trimmed_array})
                 print("Trimmed AI_image_array for user", user)
 
+#lastestmessage 컬렉션 클래스
+class LastestMessageCollection(FirestoreCollection):
+    def __init__(self, lastestMessageArray=None, user=None):
+        super().__init__('lastestMessage')
+        self.lastestMessageArray = lastestMessageArray if lastestMessageArray else []
+        self.user = user
+
+    def trim_lastest_message_array(self, user):
+        docs = self.collection.where('user', '==', user).stream()
+        for doc in docs:
+            data = self.to_dict(doc)
+            if len(data['lastestMessageArray']) > 10:
+                trimmed_array = data['lastestMessageArray'][1:]  # Remove the oldest element
+                self.collection.document(doc.id).update({'lastestMessageArray': trimmed_array})
+                print("Trimmed lastestMessageArray for user", user)
 
 # message 컬렉션 클래스
 class MessageCollection(FirestoreCollection):
